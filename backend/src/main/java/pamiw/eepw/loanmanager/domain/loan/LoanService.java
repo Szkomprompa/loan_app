@@ -7,6 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 import pamiw.eepw.loanmanager.domain.debt.DebtService;
 import pamiw.eepw.loanmanager.domain.user.User;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -30,6 +31,10 @@ public class LoanService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Loan not found"));
     }
 
+    public List<LoanDto> findAll() {
+        return loanRepository.findAll().stream().map(loanMapper::toDto).toList();
+    }
+
     public List<LoanDto> findAllByBorrower(User borrower) {
         return loanRepository.findAllByBorrower(borrower).map(loanMapper::toDto).toList();
     }
@@ -48,23 +53,30 @@ public class LoanService {
 
         loan.setStatus(status);
         if (status == LoanStatus.ACCEPTED) {
-            debtService.updateDebtAmount(loan.getLender().getDebt(), loan);
+            debtService.updateDebtAmount(loan.getBorrower().getDebt(), loan);
         }
     }
 
-    public void repayLoan(Loan loan) {
-        if (loan.getStatus() != LoanStatus.ACCEPTED) {
+    public void repayLoan(Long id) {
+        Loan loan = loanRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Loan not found"));
+        if (loan.getStatus() != LoanStatus.ACCEPTED && loan.getStatus() != LoanStatus.EXPIRED) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Loan is not accepted");
         }
         loan.setStatus(LoanStatus.PAID);
-        debtService.updateDebtAmount(loan.getLender().getDebt(), loan);
+        debtService.updateDebtAmount(loan.getBorrower().getDebt(), loan);
     }
 
-    public void setLoanExpired(Loan loan) {
+    private void setLoanExpired(Loan loan) {
         if (loan.getStatus() != LoanStatus.ACCEPTED) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Loan is not accepted");
         }
         loan.setStatus(LoanStatus.EXPIRED);
-        debtService.updateDebtAmount(loan.getLender().getDebt(), loan);
+        debtService.updateDebtAmount(loan.getBorrower().getDebt(), loan);
+    }
+
+    private void checkExpirationDate(Loan loan) {
+        if (loan.getDueDate().isBefore(LocalDate.now())) {
+            setLoanExpired(loan);
+        }
     }
 }

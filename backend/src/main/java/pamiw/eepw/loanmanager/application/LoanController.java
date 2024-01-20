@@ -11,7 +11,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "loans")
+@RequestMapping("/api/loan")
 @RequiredArgsConstructor
 public class LoanController {
     private final LoanService loanService;
@@ -36,4 +36,14 @@ public class LoanController {
         log.debug("Find all loans");
         return loanService.findAll();
     }
+
+    @GetMapping("/{id}/repay")
+    public void repayLoan(
+            @PathVariable Long id) {
+        log.debug("Repay loan: {}", id);
+        loanService.repayLoan(id);
+    }
+
+    //TODO: Reply to loan
+    //TODO: Find all by borrower and lender
 }
