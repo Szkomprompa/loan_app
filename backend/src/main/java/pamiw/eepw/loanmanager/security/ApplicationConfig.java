@@ -1,8 +1,9 @@
-package pamiw.eepw.loanmanager.infrastructure;
+package pamiw.eepw.loanmanager.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -15,6 +16,7 @@ import pamiw.eepw.loanmanager.domain.user.UserRepository;
 
 @Configuration
 @RequiredArgsConstructor
+@EnableScheduling
 public class ApplicationConfig {
     private final UserRepository userRepository;
     @Bean

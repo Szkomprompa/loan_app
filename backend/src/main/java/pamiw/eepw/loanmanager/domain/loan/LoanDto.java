@@ -1,15 +1,14 @@
 package pamiw.eepw.loanmanager.domain.loan;
 
-import lombok.Builder;
-import lombok.Value;
-import lombok.extern.jackson.Jacksonized;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
-@Builder
-@Jacksonized
+@Data
+@NoArgsConstructor
 public class LoanDto {
     Long id;
-    Long lenderId;
+    String lenderEmail;
+    String borrowerEmail;
     Double amount;
     String creationDate;
     String dueDate;

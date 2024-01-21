@@ -1,6 +1,7 @@
 package pamiw.eepw.loanmanager.domain.debt;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,5 +26,6 @@ public class Debt {
     private Double unpaidAmount;
 
     @OneToOne
+    @NotNull
     private User user;
 }

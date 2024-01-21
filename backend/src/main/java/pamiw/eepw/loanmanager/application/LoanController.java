@@ -3,9 +3,12 @@ package pamiw.eepw.loanmanager.application;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pamiw.eepw.loanmanager.domain.loan.LoanDto;
+import pamiw.eepw.loanmanager.domain.loan.LoanRequest;
 import pamiw.eepw.loanmanager.domain.loan.LoanService;
+import pamiw.eepw.loanmanager.domain.loan.LoanStatus;
 
 import java.util.List;
 
@@ -18,32 +21,36 @@ public class LoanController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public LoanDto createLoan(
-            @RequestBody LoanDto loanDto) {
-        log.debug("Create loan: {}", loanDto);
-        return loanService.createLoan(loanDto);
+    public ResponseEntity<LoanDto> createLoan(
+            @RequestBody LoanRequest loanRequest) {
+        log.debug("Create loan: {}", loanRequest);
+        return ResponseEntity.ok(loanService.createLoan(loanRequest));
     }
 
-    @GetMapping("/{id}")
-    public LoanDto findById(
-            @PathVariable Long id) {
-        log.debug("Find loan by id: {}", id);
-        return loanService.findById(id);
+    @PutMapping("/{id}/reply")
+    public ResponseEntity<LoanDto> replyToLoan(
+            @PathVariable Long id,
+            @RequestParam LoanStatus status) {
+        log.debug("Reply to loan: {}", id);
+        return ResponseEntity.ok(loanService.replyToLoan(id, status));
     }
 
-    @GetMapping
-    public List<LoanDto> findAll() {
-        log.debug("Find all loans");
-        return loanService.findAll();
+    @GetMapping("/borrowed")
+    public ResponseEntity<List<LoanDto>> findAllBorrowed() {
+        log.debug("Find all loans by borrower");
+        return ResponseEntity.ok(loanService.findAllBorrowed());
+    }
+
+    @GetMapping("/lent")
+    public ResponseEntity<List<LoanDto>> findAllLent() {
+        log.debug("Find all loans by lender");
+        return ResponseEntity.ok(loanService.findAllLent());
     }
 
     @GetMapping("/{id}/repay")
-    public void repayLoan(
+    public ResponseEntity<LoanDto> repayLoan(
             @PathVariable Long id) {
         log.debug("Repay loan: {}", id);
-        loanService.repayLoan(id);
+        return ResponseEntity.ok(loanService.repayLoan(id));
     }
-
-    //TODO: Reply to loan
-    //TODO: Find all by borrower and lender
 }

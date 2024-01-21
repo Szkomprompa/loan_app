@@ -41,9 +41,6 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "borrower")
     private Set<Loan> loans = new HashSet<>();
 
-    @OneToOne
-    private Debt debt;
-
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
