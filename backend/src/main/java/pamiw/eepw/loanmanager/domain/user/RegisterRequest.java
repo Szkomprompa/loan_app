@@ -1,5 +1,6 @@
 package pamiw.eepw.loanmanager.domain.user;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
@@ -11,7 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 public class RegisterRequest {
     @NotNull
-    @Pattern(regexp = "[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z0-9]+", message = "Email format is invalid.")
+    @Email(message = "Email should be valid")
     private String email;
 
     @NotNull
@@ -19,8 +20,10 @@ public class RegisterRequest {
     private String password;
 
     @NotNull
+    @Pattern(regexp = "^[A-Z][a-z]+$", message = "First name must start with uppercase letter and contain only letters")
     private String firstName;
 
     @NotNull
+    @Pattern(regexp = "^[A-Z][a-z]+(-[A-Z][a-z]+)?$", message = "Last name must start with uppercase letter and contain only letters and may contain a hyphen")
     private String lastName;
 }

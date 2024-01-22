@@ -12,14 +12,14 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 public class LoanRequest {
-    @Email
+    @Email(message = "Email should be valid")
     @NotNull
     private String borrowerEmail;
 
-    @Positive
+    @Positive(message = "Amount must be positive")
     private Double amount;
 
-    @Future
+    @Future(message = "Due date must be in the future")
     @NotNull
     private LocalDate dueDate;
 }

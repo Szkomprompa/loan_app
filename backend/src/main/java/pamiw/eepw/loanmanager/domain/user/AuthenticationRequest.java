@@ -1,5 +1,6 @@
 package pamiw.eepw.loanmanager.domain.user;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
@@ -11,7 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 public class AuthenticationRequest {
     @NotNull
-    @Pattern(regexp = "[a-zA-Z0-9]+@[a-zA-Z0-9]+\\.[a-zA-Z0-9]+", message = "Email format is invalid.")
+    @Email(message = "Email should be valid")
     private String email;
 
     @NotNull

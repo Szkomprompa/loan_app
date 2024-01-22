@@ -1,5 +1,6 @@
 package pamiw.eepw.loanmanager.application;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,7 @@ public class LoanController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<LoanDto> createLoan(
-            @RequestBody LoanRequest loanRequest) {
+            @Valid @RequestBody LoanRequest loanRequest) {
         log.debug("Create loan: {}", loanRequest);
         return ResponseEntity.ok(loanService.createLoan(loanRequest));
     }
