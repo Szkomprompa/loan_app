@@ -1,6 +1,7 @@
 package pamiw.eepw.loanmanager.domain.loan;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class LoanService {
     private final LoanRepository loanRepository;
     private final LoanMapper loanMapper;
@@ -45,6 +47,15 @@ public class LoanService {
     public List<LoanDto> findAllLent() {
         String lender = userService.getCurrentUser().getEmail();
         return loanRepository.findAllByLenderEmail(lender).stream().map(loanMapper::toDto).toList();
+    }
+
+    public LoanDto findById(Long id) {
+        Loan loan = loanRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Loan not found"));
+        if (!loan.getLender().getEmail().equals(userService.getCurrentUser().getEmail()) && !loan.getBorrower().getEmail().equals(userService.getCurrentUser().getEmail())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You are not the lender or the borrower");
+        }
+
+        return loanMapper.toDto(loan);
     }
 
     public LoanDto replyToLoan(Long id, LoanStatus status) {

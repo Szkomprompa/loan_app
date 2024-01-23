@@ -48,6 +48,13 @@ public class LoanController {
         return ResponseEntity.ok(loanService.findAllLent());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<LoanDto> findById(
+            @PathVariable Long id) {
+        log.debug("Find loan by id: {}", id);
+        return ResponseEntity.ok(loanService.findById(id));
+    }
+
     @GetMapping("/{id}/repay")
     public ResponseEntity<LoanDto> repayLoan(
             @PathVariable Long id) {

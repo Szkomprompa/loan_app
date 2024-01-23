@@ -2,15 +2,13 @@ package pamiw.eepw.loanmanager.application;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import pamiw.eepw.loanmanager.domain.user.AuthenticationRequest;
-import pamiw.eepw.loanmanager.domain.user.AuthenticationResponse;
+import org.springframework.web.bind.annotation.*;
+import pamiw.eepw.loanmanager.security.AuthenticationRequest;
+import pamiw.eepw.loanmanager.security.AuthenticationResponse;
 import pamiw.eepw.loanmanager.security.AuthenticationService;
-import pamiw.eepw.loanmanager.domain.user.RegisterRequest;
+import pamiw.eepw.loanmanager.security.RegisterRequest;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -27,6 +25,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AuthenticationResponse> authenticate(
             @Valid @RequestBody AuthenticationRequest request
     ) {

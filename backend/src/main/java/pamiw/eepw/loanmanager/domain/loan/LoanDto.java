@@ -6,11 +6,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class LoanDto {
-    Long id;
-    String lenderEmail;
-    String borrowerEmail;
-    Double amount;
-    String creationDate;
-    String dueDate;
-    LoanStatus status;
+    private Long id;
+    private String lenderEmail;
+    private String borrowerEmail;
+    private Double amount;
+    private String creationDate;
+    private String dueDate;
+    private LoanStatus status;
 }

@@ -1,4 +1,4 @@
-package pamiw.eepw.loanmanager.domain.user;
+package pamiw.eepw.loanmanager.security;
 
 import lombok.*;
 
