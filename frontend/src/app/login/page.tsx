@@ -85,7 +85,7 @@ export default function Login() {
                     </Link>
                     <Grid container>
                         <Grid item xs>
-                            <Link href="#" color="secondary" variant="body2">
+                            <Link href="/recover-password" color="secondary" variant="body2">
                                 Forgot password?
                             </Link>
                         </Grid>

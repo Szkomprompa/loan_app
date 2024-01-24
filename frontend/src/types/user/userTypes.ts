@@ -16,9 +16,16 @@ type LoginRequest = {
     password: string;
 }
 
+type RecoverPasswordRequest = {
+    token: string;
+    newPassword: string;
+    confirmationPassword: string;
+    email: string;
+}
+
 type AuthResponse = {
     token: string;
 }
 
 
-export type {RegisterRequest, LoginRequest, AuthResponse, ChangePasswordRequest};
+export type {RegisterRequest, LoginRequest, AuthResponse, ChangePasswordRequest, RecoverPasswordRequest};

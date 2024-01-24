@@ -1,4 +1,4 @@
-package pamiw.eepw.loanmanager.security;
+package pamiw.eepw.loanmanager.security.password;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -10,9 +10,9 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pamiw.eepw.loanmanager.domain.user.UserRepository;
+import pamiw.eepw.loanmanager.security.password.CustomPasswordEncoder;
 
 @Configuration
 @RequiredArgsConstructor

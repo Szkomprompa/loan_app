@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(req -> {
                     req.requestMatchers("api/auth/register").permitAll();
                     req.requestMatchers("api/auth/login").permitAll();
+                    req.requestMatchers("api/auth/recover-password").permitAll();
                     req.anyRequest().authenticated();
                 })
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

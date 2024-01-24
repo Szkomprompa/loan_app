@@ -23,7 +23,7 @@ export default function Register() {
 
         register(registerRequest).then((response) => {
             dispatch(setAuthentication(response?.token));
-            router.push('/loans/lent-loans');
+            router.push('/recovery-token');
         })
     };
 
@@ -88,17 +88,15 @@ export default function Register() {
                             />
                         </Grid>
                     </Grid>
-                    <Link href="/">
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            sx={{mt: 3, mb: 2}}
-                        >
-                            Register
-                        </Button>
-                    </Link>
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        sx={{mt: 3, mb: 2}}
+                    >
+                        Register
+                    </Button>
                     <Grid container justifyContent="flex-end">
                         <Grid item>
                             <Link href="/login" color="secondary" variant="body2">

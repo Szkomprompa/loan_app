@@ -9,10 +9,12 @@ import pamiw.eepw.loanmanager.security.AuthenticationRequest;
 import pamiw.eepw.loanmanager.security.AuthenticationResponse;
 import pamiw.eepw.loanmanager.security.AuthenticationService;
 import pamiw.eepw.loanmanager.security.RegisterRequest;
+import pamiw.eepw.loanmanager.security.password.RecoverPasswordRequest;
 
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
@@ -30,5 +32,12 @@ public class AuthenticationController {
             @Valid @RequestBody AuthenticationRequest request
     ) {
         return ResponseEntity.ok(authenticationService.authenticate(request));
+    }
+
+    @PostMapping("/recover-password")
+    public ResponseEntity<AuthenticationResponse> resetPassword(
+            @Valid @RequestBody RecoverPasswordRequest request
+    ) {
+        return ResponseEntity.ok(authenticationService.resetPassword(request));
     }
 }
