@@ -8,7 +8,7 @@ import {
     Container,
     Grid,
     TextField,
-    Typography
+    Typography, Alert
 } from '@mui/material';
 import {LockOutlined} from "@mui/icons-material";
 import {LoginRequest} from "@/types/user/userTypes";
@@ -33,7 +33,9 @@ export default function Login() {
         login(loginRequest).then((response) => {
             dispatch(setAuthentication(response?.token));
             router.push('/loans/lent-loans');
-        })
+        }).catch((error) => {
+            console.log("Problem logging in", error);
+        });
     };
 
     return (

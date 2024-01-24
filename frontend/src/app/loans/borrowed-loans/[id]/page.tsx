@@ -82,8 +82,8 @@ export default function BorrowedLoan({params}: { params: { id: number } }) {
                 </Typography>
                 <Typography variant="body1" gutterBottom>
                     {loan?.status}
-                    <FormControl fullWidth>
-                        <InputLabel htmlFor="loan-status" sx={{py: 3}}>Change Status</InputLabel>
+                    <FormControl fullWidth sx={{py: 3}}>
+                        <InputLabel htmlFor="loan-status" >Change Status</InputLabel>
                         <Select
                             id="loan-status"
                             value={newLoanStatus}

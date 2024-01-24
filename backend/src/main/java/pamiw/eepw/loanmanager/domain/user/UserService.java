@@ -63,12 +63,13 @@ public class UserService {
                     .build();
         } else {
             token = tokenOptional.get();
+            token.setToken(passwordEncoder.encode(tokenString));
         }
         passwordResetTokenRepository.save(token);
         return tokenString;
     }
 
     private String generateRecoveryToken() {
-        return UUID.randomUUID().toString().substring(0, 8);
+        return UUID.randomUUID().toString().substring(0, 16);
     }
 }

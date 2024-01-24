@@ -26,7 +26,7 @@ export default function RecoverPassword() {
 
         recoverPassword(recoverPasswordRequest).then((response)=> {
             dispatch(setAuthentication(response?.token));
-            router.push('/loans/lent-loans');
+            router.push('/recovery-token');
         })
     };
 
