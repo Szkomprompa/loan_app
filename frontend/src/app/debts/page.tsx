@@ -98,8 +98,8 @@ export default function Debts() {
                                         key={debt.id}
                                     >
                                         <TableCell align="left">{debt.userEmail}</TableCell>
-                                        <TableCell align="left">{debt.totalAmount}</TableCell>
-                                        <TableCell align="right">{debt.unpaidAmount}</TableCell>
+                                        <TableCell align="left">{debt.totalAmount} $</TableCell>
+                                        <TableCell align="right">{debt.unpaidAmount} $</TableCell>
                                     </TableRow>
                                 );
                             })}
