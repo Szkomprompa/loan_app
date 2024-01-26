@@ -1,12 +1,13 @@
 'use client';
 
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Button, Container, FormControl, InputLabel, MenuItem, Paper, Select, Typography} from "@mui/material";
 import {LoanDto} from "@/types/loan/loanTypes";
 import {getLoanById, replyToLoan} from "@/services/loanService";
 import {RootState} from "@/redux/global-store";
 import {useSelector} from "react-redux";
 import Header from "@/components/Header";
+import NotLoggedIn from "@/components/NotLoggedIn";
 
 export default function BorrowedLoan({params}: { params: { id: number } }) {
     const [loan, setLoan] = useState<LoanDto | null>(null);
@@ -35,6 +36,12 @@ export default function BorrowedLoan({params}: { params: { id: number } }) {
             console.error('Error updating loan status:', error);
         }
     };
+
+    if (token === null) {
+        return (
+            <NotLoggedIn/>
+        );
+    }
 
     return (
         <Container component="main" maxWidth="sm">

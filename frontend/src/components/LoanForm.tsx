@@ -1,9 +1,10 @@
 import {
+    Alert, AlertColor,
     Button,
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle,
+    DialogTitle, InputAdornment, Snackbar,
     TextField,
 } from "@mui/material";
 import React, {useState} from "react";
@@ -16,11 +17,10 @@ import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {DemoContainer} from "@mui/x-date-pickers/internals/demo";
 import dayjs, {Dayjs} from "dayjs";
 
-
 const LoanForm = (props: {open: boolean, onClose: () => void} ) => {
     const [borrowerEmail, setBorrowerEmail] = useState('');
     const [amount, setAmount] = useState('');
-    const [dueDate, setDueDate] = useState(dayjs());
+    const [dueDate, setDueDate] = useState(dayjs().add(7, 'day'));
 
     const token = useSelector((state: RootState) => state.auth.token);
 
@@ -28,7 +28,6 @@ const LoanForm = (props: {open: boolean, onClose: () => void} ) => {
         console.log('Adding loan:', {borrowerEmail, amount, dueDate});
 
         const formattedDueDate = dayjs(dueDate).format('YYYY-MM-DD');
-        console.log('Formatted due date:', formattedDueDate)
 
         const loanRequest: LoanRequest = {
             borrowerEmail: borrowerEmail,
@@ -37,14 +36,31 @@ const LoanForm = (props: {open: boolean, onClose: () => void} ) => {
         }
 
         createLoan(loanRequest, token)
-            .then((createdLoan) => console.log('Created loan:', createdLoan))
-            .catch((error) => console.error('Error creating loan:', error));
+            .then((createdLoan) => {
+                console.log('Created loan:', createdLoan);
+                setAlertMessage('Loan created successfully');
+                setAlertSeverity('success');
+                setDisplayAlert(true);
+                props.onClose();
+            })
+            .catch((error) => {
+                console.error('Error creating loan:', error)
+                setAlertMessage('Error creating loan');
+                setAlertSeverity('error');
+                setDisplayAlert(true);
+            });
 
         setAmount('');
         setBorrowerEmail('');
-        setDueDate(dayjs());
+        setDueDate(dayjs().add(7, 'day'));
+    };
 
-        props.onClose();
+    const [displayAlert, setDisplayAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertSeverity, setAlertSeverity] = useState('info');
+
+    const handleCloseAlert = () => {
+        setDisplayAlert(false);
     };
 
     return (
@@ -59,6 +75,7 @@ const LoanForm = (props: {open: boolean, onClose: () => void} ) => {
                     value={borrowerEmail}
                     onChange={(e) => setBorrowerEmail(e.target.value)}
                     margin="normal"
+                    error={displayAlert}
                 />
                 <TextField
                     label="Amount"
@@ -69,10 +86,15 @@ const LoanForm = (props: {open: boolean, onClose: () => void} ) => {
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     margin="normal"
+                    error={displayAlert}
+                    InputProps={{
+                        endAdornment: <InputAdornment position="start">$</InputAdornment>,
+                    }}
                 />
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={['DateField']}>
                         <DatePicker
+                            sx={{ color: displayAlert ? 'red' : 'inherit' }}
                             value={dueDate}
                             label="Due date"
                             format={'YYYY-MM-DD'}
@@ -93,6 +115,11 @@ const LoanForm = (props: {open: boolean, onClose: () => void} ) => {
                 <Button variant="contained" color="primary" onClick={props.onClose}>
                     Cancel
                 </Button>
+                <Snackbar open={displayAlert} autoHideDuration={6000} onClose={handleCloseAlert}>
+                    <Alert onClose={handleCloseAlert} severity={alertSeverity as AlertColor}>
+                        {alertMessage}
+                    </Alert>
+                </Snackbar>
             </DialogActions>
         </Dialog>
     );

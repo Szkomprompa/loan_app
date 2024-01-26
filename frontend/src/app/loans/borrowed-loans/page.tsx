@@ -85,38 +85,43 @@ export default function BorrowedLoans() {
                         <TableBody>
                             {loans?.map((loan) => {
                                 return (
-                                        <TableRow
-                                            hover
-                                            sx={{'&:last-child td, &:last-child th': {border: 0}}}
-                                            tabIndex={-1}
-                                            key={loan.id}
-                                        >
-                                            <TableCell align="left" role="button">
-                                                <Link href={`/loans/borrowed-loans/${loan.id}`} passHref style={{textDecoration: 'none'}}>
-                                                    {loan.lenderEmail}
-                                                </Link>
-                                            </TableCell>
-                                            <TableCell align="left" role="button">
-                                                <Link href={`/loans/borrowed-loans/${loan.id}`} passHref style={{textDecoration: 'none'}}>
-                                                    {loan.creationDate}
-                                                </Link>
-                                            </TableCell>
-                                            <TableCell align="left" role="button">
-                                                <Link href={`/loans/borrowed-loans/${loan.id}`} passHref style={{textDecoration: 'none'}}>
-                                                    {loan.dueDate}
-                                                </Link>
-                                            </TableCell>
-                                            <TableCell align="left" role="button">
-                                                <Link href={`/loans/borrowed-loans/${loan.id}`} passHref style={{textDecoration: 'none'}}>
-                                                    <OrderStatus status={loan.status}/>
-                                                </Link>
-                                            </TableCell>
-                                            <TableCell align="right" role="button">
-                                                <Link href={`/loans/borrowed-loans/${loan.id}`} passHref style={{textDecoration: 'none'}}>
-                                                    {loan.amount}
-                                                </Link>
-                                            </TableCell>
-                                        </TableRow>
+                                    <TableRow
+                                        hover
+                                        sx={{'&:last-child td, &:last-child th': {border: 0}}}
+                                        tabIndex={-1}
+                                        key={loan.id}
+                                    >
+                                        <TableCell align="left" role="button">
+                                            <Link href={`/loans/borrowed-loans/${loan.id}`} passHref
+                                                  style={{textDecoration: 'none'}}>
+                                                {loan.lenderEmail}
+                                            </Link>
+                                        </TableCell>
+                                        <TableCell align="left" role="button">
+                                            <Link href={`/loans/borrowed-loans/${loan.id}`} passHref
+                                                  style={{textDecoration: 'none'}}>
+                                                {loan.creationDate}
+                                            </Link>
+                                        </TableCell>
+                                        <TableCell align="left" role="button">
+                                            <Link href={`/loans/borrowed-loans/${loan.id}`} passHref
+                                                  style={{textDecoration: 'none'}}>
+                                                {loan.dueDate}
+                                            </Link>
+                                        </TableCell>
+                                        <TableCell align="left" role="button">
+                                            <Link href={`/loans/borrowed-loans/${loan.id}`} passHref
+                                                  style={{textDecoration: 'none'}}>
+                                                <OrderStatus status={loan.status}/>
+                                            </Link>
+                                        </TableCell>
+                                        <TableCell align="right" role="button">
+                                            <Link href={`/loans/borrowed-loans/${loan.id}`} passHref
+                                                  style={{textDecoration: 'none'}}>
+                                                {loan.amount} $
+                                            </Link>
+                                        </TableCell>
+                                    </TableRow>
                                 );
                             })}
                         </TableBody>

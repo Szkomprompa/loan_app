@@ -37,6 +37,9 @@ export default function Register() {
             if (response?.token) {
                 dispatch(setAuthentication(response.token));
                 setRecoveryToken(response.recoveryToken);
+                setAlertMessage('Successfully registered user.');
+                setAlertSeverity('success');
+                setDisplayAlert(true);
                 handleOpenModal();
             } else {
                 setAlertMessage('Failed to register user. Please try again.');

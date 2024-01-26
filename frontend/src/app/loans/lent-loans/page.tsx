@@ -136,7 +136,7 @@ export default function LentLoans() {
                                         </TableCell>
                                         <TableCell align="right" role="button">
                                             <Link href={`/loans/lent-loans/${loan.id}`} passHref style={{textDecoration: 'none'}}>
-                                                {loan.amount}
+                                                {loan.amount} $
                                             </Link>
                                         </TableCell>
                                     </TableRow>
