@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, {useState} from 'react';
 import {
     Link,
     Avatar,
@@ -8,7 +8,7 @@ import {
     Container,
     Grid,
     TextField,
-    Typography, Alert
+    Typography, Alert, AlertColor, Snackbar, InputLabel, OutlinedInput, FormHelperText, FormControl
 } from '@mui/material';
 import {LockOutlined} from "@mui/icons-material";
 import {LoginRequest} from "@/types/user/userTypes";
@@ -31,11 +31,29 @@ export default function Login() {
         }
 
         login(loginRequest).then((response) => {
-            dispatch(setAuthentication(response?.token));
-            router.push('/loans/lent-loans');
-        }).catch((error) => {
-            console.log("Problem logging in", error);
-        });
+            if (response?.token) {
+                dispatch(setAuthentication(response?.token));
+                router.push('/loans/lent-loans');
+            } else {
+                setAlertMessage('Failed to log in. Please try again.');
+                setAlertSeverity('error');
+                setDisplayAlert(true);
+            }
+        })
+            .catch((error) => {
+                console.log("Error logging in:", error);
+                setAlertMessage('An error occurred while logging in. Please try again later.');
+                setAlertSeverity('error');
+                setDisplayAlert(true);
+            });
+    };
+
+    const [displayAlert, setDisplayAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertSeverity, setAlertSeverity] = useState('info');
+
+    const handleCloseAlert = () => {
+        setDisplayAlert(false);
     };
 
     return (
@@ -64,17 +82,24 @@ export default function Login() {
                         name="email"
                         autoComplete="email"
                         autoFocus
+                        error={displayAlert}
                     />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="password"
-                        label="Password"
-                        type="password"
-                        id="password"
-                        autoComplete="current-password"
-                    />
+                    <FormControl required fullWidth error={displayAlert} sx={{mt: 1}}>
+                        <InputLabel htmlFor="password">Password</InputLabel>
+                        <OutlinedInput
+                            required
+                            name="password"
+                            label="Password"
+                            type="password"
+                            id="password"
+                            autoComplete="current-password"
+                            aria-describedby="component-helper-text"
+                            margin="dense"
+                        />
+                        <FormHelperText id="component-helper-text" style={{ textAlign: 'justify' }}>
+                            {displayAlert ? 'Incorrect email or password.' : ''}
+                        </FormHelperText>
+                    </FormControl>
                     <Link href="/">
                         <Button
                             type="submit"
@@ -84,6 +109,11 @@ export default function Login() {
                         >
                             Log In
                         </Button>
+                        <Snackbar open={displayAlert} autoHideDuration={6000} onClose={handleCloseAlert}>
+                            <Alert onClose={handleCloseAlert} severity={alertSeverity as AlertColor}>
+                                {alertMessage}
+                            </Alert>
+                        </Snackbar>
                     </Link>
                     <Grid container>
                         <Grid item xs>

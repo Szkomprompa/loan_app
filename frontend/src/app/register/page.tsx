@@ -7,19 +7,16 @@ import {
     Button,
     Container,
     Grid,
-    TextField,
     Typography,
     Snackbar,
     Alert,
-    AlertColor
+    AlertColor, FormControl, InputLabel, FormHelperText, OutlinedInput
 } from '@mui/material';
 import {LockOutlined} from "@mui/icons-material";
 import {useDispatch} from "react-redux";
-import {useRouter} from "next/navigation";
 import {register} from "@/services/authService";
 import {setAuthentication} from "@/redux/auth-slice";
 import RecoveryToken from "@/components/RecoveryToken";
-import LoanForm from "@/components/LoanForm";
 
 export default function Register() {
     const [isModalOpen, setModalOpen] = useState(false);
@@ -42,16 +39,14 @@ export default function Register() {
                 setRecoveryToken(response.recoveryToken);
                 handleOpenModal();
             } else {
-                // Show a Material-UI Alert to the user indicating an issue with the response
-                setAlertMessage('Failed to recover password. Please try again.');
+                setAlertMessage('Failed to register user. Please try again.');
                 setAlertSeverity('error');
                 setDisplayAlert(true);
             }
         })
             .catch((error) => {
-                // Handle the error and show a Material-UI Alert to the user
-                console.error('Error recovering password:', error);
-                setAlertMessage('An error occurred while recovering the password. Please try again later.');
+                console.error('Error registering user:', error);
+                setAlertMessage('An error occurred while registering the user. Please try again later.');
                 setAlertSeverity('error');
                 setDisplayAlert(true);
             });
@@ -92,46 +87,76 @@ export default function Register() {
                 <Box component="form" noValidate onSubmit={handleSubmit} sx={{mt: 3}}>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
-                            <TextField
-                                autoComplete="given-name"
-                                name="firstName"
-                                required
-                                fullWidth
-                                id="firstName"
-                                label="First Name"
-                                autoFocus
-                            />
+                            <FormControl required error={displayAlert} sx={{mt: 1}}>
+                                <InputLabel htmlFor="firstName">First Name</InputLabel>
+                                <OutlinedInput
+                                    autoComplete="given-name"
+                                    name="firstName"
+                                    fullWidth
+                                    id="firstName"
+                                    autoFocus
+                                    aria-describedby="component-helper-text"
+                                    label="First Name"
+                                    margin="dense"
+                                />
+                                <FormHelperText id="component-helper-text" style={{ textAlign: 'justify' }}>
+                                    {displayAlert ? 'Must start with a capital letter and contain only letters.' : ''}
+                                </FormHelperText>
+                            </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <TextField
-                                required
-                                fullWidth
-                                id="lastName"
-                                label="Last Name"
-                                name="lastName"
-                                autoComplete="family-name"
-                            />
+                            <FormControl required error={displayAlert} sx={{mt: 1}}>
+                                <InputLabel htmlFor="lastName">Last Name</InputLabel>
+                                <OutlinedInput
+                                    required
+                                    fullWidth
+                                    id="lastName"
+                                    label="Last Name"
+                                    name="lastName"
+                                    autoComplete="family-name"
+                                    aria-describedby="component-helper-text"
+                                    margin="dense"
+                                />
+                                <FormHelperText id="component-helper-text" style={{ textAlign: 'justify' }}>
+                                    {displayAlert ? 'Must start with a capital letter and contain only letters.' : ''}
+                                </FormHelperText>
+                            </FormControl>
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField
-                                required
-                                fullWidth
-                                id="email"
-                                label="Email Address"
-                                name="email"
-                                autoComplete="email"
-                            />
+                            <FormControl required fullWidth error={displayAlert} sx={{mt: 1}}>
+                                <InputLabel htmlFor="emial">Email</InputLabel>
+                                <OutlinedInput
+                                    required
+                                    fullWidth
+                                    id="email"
+                                    label="Email Address"
+                                    name="email"
+                                    autoComplete="email"
+                                    aria-describedby="component-helper-text"
+                                    margin="dense"
+                                />
+                                <FormHelperText id="component-helper-text" style={{ textAlign: 'justify' }}>
+                                    {displayAlert ? 'Must be a valid email address.' : ''}
+                                </FormHelperText>
+                            </FormControl>
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField
-                                required
-                                fullWidth
-                                name="password"
-                                label="Password"
-                                type="password"
-                                id="password"
-                                autoComplete="new-password"
-                            />
+                            <FormControl required fullWidth error={displayAlert} sx={{mt: 1}}>
+                                <InputLabel htmlFor="password">Password</InputLabel>
+                                <OutlinedInput
+                                    required
+                                    name="password"
+                                    label="Password"
+                                    type="password"
+                                    id="password"
+                                    autoComplete="new-password"
+                                    aria-describedby="component-helper-text"
+                                    margin="dense"
+                                />
+                                <FormHelperText id="component-helper-text" style={{ textAlign: 'justify' }}>
+                                    {displayAlert ? 'Must contain at least 7 characters, including at least 1 uppercase letter, 1 lowercase letter, one digit, and one special character.' : ''}
+                                </FormHelperText>
+                            </FormControl>
                         </Grid>
                     </Grid>
                     <Button

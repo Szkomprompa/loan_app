@@ -1,7 +1,18 @@
 'use client';
 import React, {useState} from "react";
 import {RecoverPasswordRequest} from "@/types/user/userTypes";
-import {Alert, AlertColor, Avatar, Box, Button, Container, Snackbar, TextField, Typography} from "@mui/material";
+import {
+    Alert,
+    AlertColor,
+    Avatar,
+    Box,
+    Button,
+    Container, FormControl, FormHelperText,
+    InputLabel, OutlinedInput,
+    Snackbar,
+    TextField,
+    Typography
+} from "@mui/material";
 import {LockOutlined} from "@mui/icons-material";
 import {recoverPassword} from "@/services/authService";
 import {setAuthentication} from "@/redux/auth-slice";
@@ -30,14 +41,12 @@ export default function RecoverPassword() {
                 setRecoveryToken(response.recoveryToken);
                 handleOpenModal();
             } else {
-                // Show a Material-UI Alert to the user indicating an issue with the response
                 setAlertMessage('Failed to recover password. Please try again.');
                 setAlertSeverity('error');
                 setDisplayAlert(true);
             }
         })
             .catch((error) => {
-                // Handle the error and show a Material-UI Alert to the user
                 console.error('Error recovering password:', error);
                 setAlertMessage('An error occurred while recovering the password. Please try again later.');
                 setAlertSeverity('error');
@@ -79,16 +88,17 @@ export default function RecoverPassword() {
                 </Typography>
                 <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
                     <TextField
-                        margin="normal"
+                        margin="dense"
                         required
                         fullWidth
                         name="recoveryToken"
                         label="Recovery Token"
                         type="text"
                         id="recoveryToken"
+                        error={displayAlert}
                     />
                     <TextField
-                        margin="normal"
+                        margin="dense"
                         required
                         fullWidth
                         name="newPassword"
@@ -96,9 +106,10 @@ export default function RecoverPassword() {
                         type="password"
                         id="newPassword"
                         autoComplete="new-password"
+                        error={displayAlert}
                     />
                     <TextField
-                        margin="normal"
+                        margin="dense"
                         required
                         fullWidth
                         name="confirmationPassword"
@@ -106,17 +117,24 @@ export default function RecoverPassword() {
                         type="password"
                         id="confirmationPassword"
                         autoComplete="new-password"
+                        error={displayAlert}
                     />
-                    <TextField
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="email"
-                        label="Email"
-                        type="email"
-                        id="email"
-                        autoComplete="email"
-                    />
+                    <FormControl required fullWidth error={displayAlert} sx={{mt: 1}}>
+                        <InputLabel htmlFor="password">Email</InputLabel>
+                        <OutlinedInput
+                            required
+                            fullWidth
+                            id="email"
+                            label="Email Address"
+                            name="email"
+                            autoComplete="email"
+                            aria-describedby="component-helper-text"
+                            margin="dense"
+                        />
+                        <FormHelperText id="component-helper-text" style={{ textAlign: 'justify' }}>
+                            {displayAlert ? 'Check if provided data is correct.' : ''}
+                        </FormHelperText>
+                    </FormControl>
                     <Button
                         type="submit"
                         fullWidth
