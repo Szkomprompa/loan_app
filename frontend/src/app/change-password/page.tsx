@@ -21,11 +21,17 @@ import {changePassword} from "@/services/userService";
 import {RootState} from "@/redux/global-store";
 import Header from "@/components/Header";
 import NotLoggedIn from "@/components/NotLoggedIn";
+import PasswordStrengthMeter from "@/components/PasswordStrengthMeter";
 
 export default function ChangePassword() {
     const router = useRouter();
-
     const token = useSelector((state: RootState) => state.auth.token);
+
+    const [password, setPassword] = useState('');
+
+    const handlePasswordChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        setPassword(event.target.value);
+    };
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -102,8 +108,10 @@ export default function ChangePassword() {
                         type="password"
                         id="newPassword"
                         autoComplete="new-password"
+                        onChange={handlePasswordChange}
                         error={displayAlert}
                     />
+                    <PasswordStrengthMeter password={password} />
                     <Grid item xs={12}>
                         <FormControl required fullWidth error={displayAlert} sx={{mt: 1}}>
                             <InputLabel htmlFor="password">Confirmation Password</InputLabel>
