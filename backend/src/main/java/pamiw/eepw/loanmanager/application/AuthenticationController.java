@@ -5,22 +5,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pamiw.eepw.loanmanager.security.AuthenticationRequest;
-import pamiw.eepw.loanmanager.security.AuthenticationResponse;
-import pamiw.eepw.loanmanager.security.AuthenticationService;
-import pamiw.eepw.loanmanager.security.RegisterRequest;
+import pamiw.eepw.loanmanager.security.*;
 import pamiw.eepw.loanmanager.security.password.RecoverPasswordRequest;
 
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@CrossOrigin(origins = "https://localhost:3000", allowCredentials = "true")
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(
+    public ResponseEntity<AuthenticationResponseWithRecoveryToken> register(
             @Valid @RequestBody RegisterRequest request
     ) {
         return ResponseEntity.ok(authenticationService.register(request));
@@ -35,7 +32,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/recover-password")
-    public ResponseEntity<AuthenticationResponse> resetPassword(
+    public ResponseEntity<AuthenticationResponseWithRecoveryToken> resetPassword(
             @Valid @RequestBody RecoverPasswordRequest request
     ) {
         return ResponseEntity.ok(authenticationService.resetPassword(request));

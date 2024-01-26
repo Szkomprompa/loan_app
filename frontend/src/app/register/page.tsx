@@ -1,15 +1,30 @@
 'use client';
-import React from 'react';
-import {Link, Avatar, Box, Button, Container, Grid, TextField, Typography} from '@mui/material';
+import React, {useState} from 'react';
+import {
+    Link,
+    Avatar,
+    Box,
+    Button,
+    Container,
+    Grid,
+    TextField,
+    Typography,
+    Snackbar,
+    Alert,
+    AlertColor
+} from '@mui/material';
 import {LockOutlined} from "@mui/icons-material";
 import {useDispatch} from "react-redux";
 import {useRouter} from "next/navigation";
 import {register} from "@/services/authService";
 import {setAuthentication} from "@/redux/auth-slice";
+import RecoveryToken from "@/components/RecoveryToken";
+import LoanForm from "@/components/LoanForm";
 
 export default function Register() {
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [recoveryToken, setRecoveryToken] = useState('');
     const dispatch = useDispatch();
-    const router = useRouter();
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -22,9 +37,40 @@ export default function Register() {
         }
 
         register(registerRequest).then((response) => {
-            dispatch(setAuthentication(response?.token));
-            router.push('/recovery-token');
+            if (response?.token) {
+                dispatch(setAuthentication(response.token));
+                setRecoveryToken(response.recoveryToken);
+                handleOpenModal();
+            } else {
+                // Show a Material-UI Alert to the user indicating an issue with the response
+                setAlertMessage('Failed to recover password. Please try again.');
+                setAlertSeverity('error');
+                setDisplayAlert(true);
+            }
         })
+            .catch((error) => {
+                // Handle the error and show a Material-UI Alert to the user
+                console.error('Error recovering password:', error);
+                setAlertMessage('An error occurred while recovering the password. Please try again later.');
+                setAlertSeverity('error');
+                setDisplayAlert(true);
+            });
+    };
+
+    const handleOpenModal = () => {
+        setModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
+    };
+
+    const [displayAlert, setDisplayAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertSeverity, setAlertSeverity] = useState('info');
+
+    const handleCloseAlert = () => {
+        setDisplayAlert(false);
     };
 
     return (
@@ -97,6 +143,12 @@ export default function Register() {
                     >
                         Register
                     </Button>
+                    <RecoveryToken open={isModalOpen} onClose={handleCloseModal} recoveryToken={recoveryToken}/>
+                    <Snackbar open={displayAlert} autoHideDuration={6000} onClose={handleCloseAlert}>
+                        <Alert onClose={handleCloseAlert} severity={alertSeverity as AlertColor}>
+                            {alertMessage}
+                        </Alert>
+                    </Snackbar>
                     <Grid container justifyContent="flex-end">
                         <Grid item>
                             <Link href="/login" color="secondary" variant="body2">

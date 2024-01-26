@@ -2,7 +2,7 @@ import axios, {AxiosResponse} from "axios";
 import {DebtDto} from "@/types/debt/debtDto";
 import {LoanDto} from "@/types/loan/loanTypes";
 
-const API_BASE_URL = 'http://localhost:8080/api/debt';
+const API_BASE_URL = 'https://localhost:8443/api/debt';
 
 export const getDebts = async (token: string | null): Promise<DebtDto[]> => {
     try {

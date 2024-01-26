@@ -12,7 +12,7 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://localhost:3000")
 public class UserController {
     private final UserService userService;
 
@@ -23,12 +23,5 @@ public class UserController {
     ) {
         userService.changePassword(request, connectedUser);
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/recovery-token")
-    public ResponseEntity<String> getRecoveryToken(
-            Principal connectedUser
-    ) {
-        return ResponseEntity.ok(userService.getRecoveryToken(connectedUser));
     }
 }

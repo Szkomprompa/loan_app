@@ -19,3 +19,10 @@ constants:
     secret: 2AEA9B7F6A14C1D51559ACA1DADA61E6CA679BFFD0436C5BAA69D2234F3B2A83
     expiration: 86400000
   pepper: ua%bG@hU!nTB%t3q
+
+server:
+  port: 8443
+  ssl:
+    key-store: classpath:secure-markdown.pfx
+    key-store-type: PKCS12
+    key-store-password: Haslo123@

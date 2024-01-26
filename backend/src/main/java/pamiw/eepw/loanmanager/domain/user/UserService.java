@@ -12,8 +12,12 @@ import pamiw.eepw.loanmanager.security.password.ChangePasswordRequest;
 import pamiw.eepw.loanmanager.security.password.PasswordResetToken;
 import pamiw.eepw.loanmanager.security.password.PasswordResetTokenRepository;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.Principal;
+import java.security.SecureRandom;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 @Service
@@ -50,11 +54,10 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public String getRecoveryToken(Principal connectedUser) {
-        var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
-
+    public String generateRecoveryToken(User user) {
         PasswordResetToken token;
-        String tokenString = generateRecoveryToken();
+        String tokenString = generateRandomString();
+        log.info("Generated token: " + tokenString);
         Optional<PasswordResetToken> tokenOptional = passwordResetTokenRepository.findByUserEmail(user.getEmail());
         if (tokenOptional.isEmpty()) {
             token = PasswordResetToken.builder()
@@ -69,7 +72,17 @@ public class UserService {
         return tokenString;
     }
 
-    private String generateRecoveryToken() {
-        return UUID.randomUUID().toString().substring(0, 16);
+    private String generateRandomString() {
+        int length = 64;
+        int leftLimit = 33;
+        int rightLimit = 126;
+        SecureRandom random = new SecureRandom();
+        StringBuilder buffer = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            int randomLimitedInt = leftLimit + (int)
+                    (random.nextFloat() * (rightLimit - leftLimit + 1));
+            buffer.append((char) randomLimitedInt);
+        }
+        return buffer.toString();
     }
 }

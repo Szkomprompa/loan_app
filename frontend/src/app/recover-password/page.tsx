@@ -1,16 +1,16 @@
 'use client';
-import {useRouter} from "next/navigation";
-import React from "react";
+import React, {useState} from "react";
 import {RecoverPasswordRequest} from "@/types/user/userTypes";
-import {Avatar, Box, Button, Container, Link, TextField, Typography} from "@mui/material";
+import {Alert, AlertColor, Avatar, Box, Button, Container, Snackbar, TextField, Typography} from "@mui/material";
 import {LockOutlined} from "@mui/icons-material";
-import Header from "@/components/Header";
 import {recoverPassword} from "@/services/authService";
 import {setAuthentication} from "@/redux/auth-slice";
 import {useDispatch} from "react-redux";
+import RecoveryToken from "@/components/RecoveryToken";
 
 export default function RecoverPassword() {
-    const router = useRouter();
+    const [isModalOpen, setModalOpen] = useState(false);
+    const [recoveryToken, setRecoveryToken] = useState('');
     const dispatch = useDispatch();
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -24,10 +24,41 @@ export default function RecoverPassword() {
             email: data.get('email')?.toString() as string,
         }
 
-        recoverPassword(recoverPasswordRequest).then((response)=> {
-            dispatch(setAuthentication(response?.token));
-            router.push('/recovery-token');
+        recoverPassword(recoverPasswordRequest).then((response) => {
+            if (response?.token) {
+                dispatch(setAuthentication(response.token));
+                setRecoveryToken(response.recoveryToken);
+                handleOpenModal();
+            } else {
+                // Show a Material-UI Alert to the user indicating an issue with the response
+                setAlertMessage('Failed to recover password. Please try again.');
+                setAlertSeverity('error');
+                setDisplayAlert(true);
+            }
         })
+            .catch((error) => {
+                // Handle the error and show a Material-UI Alert to the user
+                console.error('Error recovering password:', error);
+                setAlertMessage('An error occurred while recovering the password. Please try again later.');
+                setAlertSeverity('error');
+                setDisplayAlert(true);
+            });
+    };
+
+    const handleOpenModal = () => {
+        setModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setModalOpen(false);
+    };
+
+    const [displayAlert, setDisplayAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertSeverity, setAlertSeverity] = useState('info');
+
+    const handleCloseAlert = () => {
+        setDisplayAlert(false);
     };
 
     return (
@@ -86,16 +117,20 @@ export default function RecoverPassword() {
                         id="email"
                         autoComplete="email"
                     />
-                    <Link href="/">
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{mt: 3, mb: 2}}
-                        >
-                            Set new password
-                        </Button>
-                    </Link>
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{mt: 3, mb: 2}}
+                    >
+                        Set new password
+                    </Button>
+                    <RecoveryToken open={isModalOpen} onClose={handleCloseModal} recoveryToken={recoveryToken}/>
+                    <Snackbar open={displayAlert} autoHideDuration={6000} onClose={handleCloseAlert}>
+                        <Alert onClose={handleCloseAlert} severity={alertSeverity as AlertColor}>
+                            {alertMessage}
+                        </Alert>
+                    </Snackbar>
                 </Box>
             </Box>
         </Container>

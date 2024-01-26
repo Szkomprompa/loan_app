@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### OTHER ###
+src/main/resources/secure-markdown.pfx
+src/main/resources/10-million-password-list-top-1000000.txt
+src/main/resources/100k-most-used-passwords.txt

@@ -27,5 +27,9 @@ type AuthResponse = {
     token: string;
 }
 
+type AuthResponseWithRecoveryToken = {
+    token: string;
+    recoveryToken: string;
+}
 
-export type {RegisterRequest, LoginRequest, AuthResponse, ChangePasswordRequest, RecoverPasswordRequest};
+export type {RegisterRequest, LoginRequest, AuthResponse, ChangePasswordRequest, RecoverPasswordRequest, AuthResponseWithRecoveryToken};

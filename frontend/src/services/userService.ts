@@ -1,7 +1,7 @@
 import axios, {AxiosResponse} from "axios";
 import {ChangePasswordRequest} from "@/types/user/userTypes";
 
-const API_BASE_URL = 'http://localhost:8080/api/users';
+const API_BASE_URL = 'https://localhost:8443/api/users';
 
 export const changePassword = async (changePasswordRequest: ChangePasswordRequest, token: string | null): Promise<any> => {
     try {

@@ -7,6 +7,8 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponse {
+public class AuthenticationResponseWithRecoveryToken {
     private String token;
+
+    private String recoveryToken;
 }

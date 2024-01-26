@@ -16,7 +16,7 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/api/debt")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://localhost:3000")
 public class DebtController {
     private final DebtService debtService;
 

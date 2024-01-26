@@ -1,7 +1,7 @@
 import {LoanDto, LoanRequest} from "@/types/loan/loanTypes";
 import axios, {AxiosResponse} from "axios";
 
-const API_BASE_URL = 'http://localhost:8080/api/loan';
+const API_BASE_URL = 'https://localhost:8443/api/loan';
 
 export const createLoan = async (loan: LoanRequest, token: string | null): Promise<LoanDto> => {
     try {

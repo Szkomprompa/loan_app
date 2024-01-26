@@ -11,22 +11,29 @@ import {createLoan} from "@/services/loanService";
 import {LoanRequest} from "@/types/loan/loanTypes";
 import {useSelector} from "react-redux";
 import {RootState} from "@/redux/global-store";
+import {DatePicker, DateValidationError, LocalizationProvider, PickerChangeHandlerContext} from "@mui/x-date-pickers";
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+import {DemoContainer} from "@mui/x-date-pickers/internals/demo";
+import dayjs, {Dayjs} from "dayjs";
 
 
 const LoanForm = (props: {open: boolean, onClose: () => void} ) => {
     const [borrowerEmail, setBorrowerEmail] = useState('');
     const [amount, setAmount] = useState('');
-    const [dueDate, setDueDate] = useState('');
+    const [dueDate, setDueDate] = useState(dayjs());
 
     const token = useSelector((state: RootState) => state.auth.token);
 
     const handleAddNote = () => {
         console.log('Adding loan:', {borrowerEmail, amount, dueDate});
 
+        const formattedDueDate = dayjs(dueDate).format('YYYY-MM-DD');
+        console.log('Formatted due date:', formattedDueDate)
+
         const loanRequest: LoanRequest = {
             borrowerEmail: borrowerEmail,
             amount: +amount,
-            dueDate: dueDate,
+            dueDate: formattedDueDate,
         }
 
         createLoan(loanRequest, token)
@@ -35,12 +42,10 @@ const LoanForm = (props: {open: boolean, onClose: () => void} ) => {
 
         setAmount('');
         setBorrowerEmail('');
-        setDueDate('');
+        setDueDate(dayjs());
 
         props.onClose();
     };
-
-
 
     return (
         <Dialog open={props.open} onClose={props.onClose} maxWidth="md" fullWidth>
@@ -50,6 +55,7 @@ const LoanForm = (props: {open: boolean, onClose: () => void} ) => {
                     label="Borrower Email"
                     variant="outlined"
                     fullWidth
+                    required
                     value={borrowerEmail}
                     onChange={(e) => setBorrowerEmail(e.target.value)}
                     margin="normal"
@@ -57,19 +63,28 @@ const LoanForm = (props: {open: boolean, onClose: () => void} ) => {
                 <TextField
                     label="Amount"
                     variant="outlined"
+                    type="number"
                     fullWidth
+                    required
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
                     margin="normal"
                 />
-                <TextField
-                    label="Due Date"
-                    variant="outlined"
-                    fullWidth
-                    value={dueDate}
-                    onChange={(e) => setDueDate(e.target.value)}
-                    margin="normal"
-                />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DemoContainer components={['DateField']}>
+                        <DatePicker
+                            value={dueDate}
+                            label="Due date"
+                            format={'YYYY-MM-DD'}
+                            disablePast
+                            onChange={(value: Dayjs | null, _context: PickerChangeHandlerContext<DateValidationError>) => {
+                                if (value !== null) {
+                                    setDueDate(value);
+                                }
+                            }}
+                        />
+                    </DemoContainer>
+                </LocalizationProvider>
             </DialogContent>
             <DialogActions>
                 <Button variant="contained" color="primary" onClick={handleAddNote}>
