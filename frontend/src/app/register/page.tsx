@@ -10,18 +10,25 @@ import {
     Typography,
     Snackbar,
     Alert,
-    AlertColor, FormControl, InputLabel, FormHelperText, OutlinedInput
+    AlertColor, FormControl, InputLabel, FormHelperText, OutlinedInput, LinearProgress
 } from '@mui/material';
 import {LockOutlined} from "@mui/icons-material";
 import {useDispatch} from "react-redux";
 import {register} from "@/services/authService";
 import {setAuthentication} from "@/redux/auth-slice";
 import RecoveryToken from "@/components/RecoveryToken";
+import PasswordStrengthMeter from "@/components/PasswordStrengthMeter";
 
 export default function Register() {
     const [isModalOpen, setModalOpen] = useState(false);
     const [recoveryToken, setRecoveryToken] = useState('');
     const dispatch = useDispatch();
+
+    const [password, setPassword] = useState('');
+
+    const handlePasswordChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        setPassword(event.target.value);
+    };
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -159,11 +166,15 @@ export default function Register() {
                                     autoComplete="new-password"
                                     aria-describedby="component-helper-text"
                                     margin="dense"
+                                    onChange={handlePasswordChange}
                                 />
                                 <FormHelperText id="component-helper-text" style={{ textAlign: 'justify' }}>
                                     {displayInputError ? 'Must contain at least 7 characters, including at least 1 uppercase letter, 1 lowercase letter, one digit, and one special character.' : ''}
                                 </FormHelperText>
                             </FormControl>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <PasswordStrengthMeter password={password}/>
                         </Grid>
                     </Grid>
                     <Button
