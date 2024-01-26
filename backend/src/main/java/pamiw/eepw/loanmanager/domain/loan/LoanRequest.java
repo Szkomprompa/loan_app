@@ -1,9 +1,6 @@
 package pamiw.eepw.loanmanager.domain.loan;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +14,7 @@ public class LoanRequest {
     private String borrowerEmail;
 
     @Positive(message = "Amount must be positive")
+    @Digits(integer = 6, fraction = 2, message = "Amount must have max 2 decimal places")
     private Double amount;
 
     @Future(message = "Due date must be in the future")

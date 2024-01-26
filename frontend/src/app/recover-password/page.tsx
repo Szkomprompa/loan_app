@@ -7,8 +7,8 @@ import {
     Avatar,
     Box,
     Button,
-    Container, FormControl, FormHelperText,
-    InputLabel, OutlinedInput,
+    Container, FormControl, FormHelperText, Grid,
+    InputLabel, Link, OutlinedInput,
     Snackbar,
     TextField,
     Typography
@@ -71,7 +71,7 @@ export default function RecoverPassword() {
     };
 
     return (
-        <Container component="main">
+        <Container component="main" maxWidth="xs">
             <Box
                 sx={{
                     marginTop: 8,
@@ -149,6 +149,13 @@ export default function RecoverPassword() {
                             {alertMessage}
                         </Alert>
                     </Snackbar>
+                    <Grid container justifyContent="flex-end">
+                        <Grid item>
+                            <Link href="/login" color="secondary" variant="body2">
+                                Go back to login
+                            </Link>
+                        </Grid>
+                    </Grid>
                 </Box>
             </Box>
         </Container>

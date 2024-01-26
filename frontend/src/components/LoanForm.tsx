@@ -17,7 +17,7 @@ import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {DemoContainer} from "@mui/x-date-pickers/internals/demo";
 import dayjs, {Dayjs} from "dayjs";
 
-const LoanForm = (props: {open: boolean, onClose: () => void} ) => {
+const LoanForm = (props: { open: boolean, onClose: () => void }) => {
     const [borrowerEmail, setBorrowerEmail] = useState('');
     const [amount, setAmount] = useState('');
     const [dueDate, setDueDate] = useState(dayjs().add(7, 'day'));
@@ -26,6 +26,16 @@ const LoanForm = (props: {open: boolean, onClose: () => void} ) => {
 
     const handleAddNote = () => {
         console.log('Adding loan:', {borrowerEmail, amount, dueDate});
+
+        const isValidAmount = /^[0-9]+(\.[0-9]{2})$/.test(amount);
+
+        if (!isValidAmount) {
+            console.error('Invalid amount format');
+            setAlertMessage('Invalid amount format');
+            setAlertSeverity('error');
+            setDisplayAlert(true);
+            return;
+        }
 
         const formattedDueDate = dayjs(dueDate).format('YYYY-MM-DD');
 
@@ -38,9 +48,9 @@ const LoanForm = (props: {open: boolean, onClose: () => void} ) => {
         createLoan(loanRequest, token)
             .then((createdLoan) => {
                 console.log('Created loan:', createdLoan);
-                setAlertMessage('Loan created successfully');
-                setAlertSeverity('success');
-                setDisplayAlert(true);
+                setAmount('');
+                setBorrowerEmail('');
+                setDueDate(dayjs().add(7, 'day'));
                 props.onClose();
             })
             .catch((error) => {
@@ -49,10 +59,6 @@ const LoanForm = (props: {open: boolean, onClose: () => void} ) => {
                 setAlertSeverity('error');
                 setDisplayAlert(true);
             });
-
-        setAmount('');
-        setBorrowerEmail('');
-        setDueDate(dayjs().add(7, 'day'));
     };
 
     const [displayAlert, setDisplayAlert] = useState(false);
@@ -94,7 +100,7 @@ const LoanForm = (props: {open: boolean, onClose: () => void} ) => {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={['DateField']}>
                         <DatePicker
-                            sx={{ color: displayAlert ? 'red' : 'inherit' }}
+                            sx={{color: displayAlert ? 'red' : 'inherit'}}
                             value={dueDate}
                             label="Due date"
                             format={'YYYY-MM-DD'}

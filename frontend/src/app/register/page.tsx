@@ -45,6 +45,7 @@ export default function Register() {
                 setAlertMessage('Failed to register user. Please try again.');
                 setAlertSeverity('error');
                 setDisplayAlert(true);
+                setDisplayInputError(true);
             }
         })
             .catch((error) => {
@@ -52,6 +53,7 @@ export default function Register() {
                 setAlertMessage('An error occurred while registering the user. Please try again later.');
                 setAlertSeverity('error');
                 setDisplayAlert(true);
+                setDisplayInputError(true);
             });
     };
 
@@ -63,12 +65,14 @@ export default function Register() {
         setModalOpen(false);
     };
 
+    const [displayInputError, setDisplayInputError] = useState(false);
     const [displayAlert, setDisplayAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
     const [alertSeverity, setAlertSeverity] = useState('info');
 
     const handleCloseAlert = () => {
         setDisplayAlert(false);
+        setDisplayInputError(false);
     };
 
     return (
@@ -90,7 +94,7 @@ export default function Register() {
                 <Box component="form" noValidate onSubmit={handleSubmit} sx={{mt: 3}}>
                     <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
-                            <FormControl required error={displayAlert} sx={{mt: 1}}>
+                            <FormControl required error={displayInputError} sx={{mt: 1}}>
                                 <InputLabel htmlFor="firstName">First Name</InputLabel>
                                 <OutlinedInput
                                     autoComplete="given-name"
@@ -103,12 +107,12 @@ export default function Register() {
                                     margin="dense"
                                 />
                                 <FormHelperText id="component-helper-text" style={{ textAlign: 'justify' }}>
-                                    {displayAlert ? 'Must start with a capital letter and contain only letters.' : ''}
+                                    {displayInputError ? 'Must start with a capital letter and contain only letters.' : ''}
                                 </FormHelperText>
                             </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                            <FormControl required error={displayAlert} sx={{mt: 1}}>
+                            <FormControl required error={displayInputError} sx={{mt: 1}}>
                                 <InputLabel htmlFor="lastName">Last Name</InputLabel>
                                 <OutlinedInput
                                     required
@@ -121,12 +125,12 @@ export default function Register() {
                                     margin="dense"
                                 />
                                 <FormHelperText id="component-helper-text" style={{ textAlign: 'justify' }}>
-                                    {displayAlert ? 'Must start with a capital letter and contain only letters.' : ''}
+                                    {displayInputError ? 'Must start with a capital letter and contain only letters.' : ''}
                                 </FormHelperText>
                             </FormControl>
                         </Grid>
                         <Grid item xs={12}>
-                            <FormControl required fullWidth error={displayAlert} sx={{mt: 1}}>
+                            <FormControl required fullWidth error={displayInputError} sx={{mt: 1}}>
                                 <InputLabel htmlFor="emial">Email</InputLabel>
                                 <OutlinedInput
                                     required
@@ -139,12 +143,12 @@ export default function Register() {
                                     margin="dense"
                                 />
                                 <FormHelperText id="component-helper-text" style={{ textAlign: 'justify' }}>
-                                    {displayAlert ? 'Must be a valid email address.' : ''}
+                                    {displayInputError ? 'Must be a valid email address.' : ''}
                                 </FormHelperText>
                             </FormControl>
                         </Grid>
                         <Grid item xs={12}>
-                            <FormControl required fullWidth error={displayAlert} sx={{mt: 1}}>
+                            <FormControl required fullWidth error={displayInputError} sx={{mt: 1}}>
                                 <InputLabel htmlFor="password">Password</InputLabel>
                                 <OutlinedInput
                                     required
@@ -157,7 +161,7 @@ export default function Register() {
                                     margin="dense"
                                 />
                                 <FormHelperText id="component-helper-text" style={{ textAlign: 'justify' }}>
-                                    {displayAlert ? 'Must contain at least 7 characters, including at least 1 uppercase letter, 1 lowercase letter, one digit, and one special character.' : ''}
+                                    {displayInputError ? 'Must contain at least 7 characters, including at least 1 uppercase letter, 1 lowercase letter, one digit, and one special character.' : ''}
                                 </FormHelperText>
                             </FormControl>
                         </Grid>
