@@ -152,36 +152,38 @@ export default function BorrowedLoan({params}: { params: { id: number } }) {
                             {loan?.status}
                         </Typography>
                     </Grid>
-                    <Grid item xs={6} sx={{pb: 1}}>
-                        <FormControl fullWidth >
-                            <InputLabel htmlFor="loan-status">Change Status</InputLabel>
-                            <Select
-                                margin="dense"
-                                id="loan-status"
-                                value={newLoanStatus}
-                                label="Change Status"
-                                onChange={(e) => setNewLoanStatus(e.target.value as string)}
-                            >
-                                <MenuItem value={"ACCEPTED"}>Accepted</MenuItem>
-                                <MenuItem value={"REJECTED"}>Rejected</MenuItem>
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Button variant="contained" color="primary" onClick={handleStatusChange} sx={{mr: 5}}>
-                            Update Status
-                        </Button>
-                        <Link href={'/loans/lent-loans'}>
-                            <Button variant="contained" color="primary">
-                                Go back
-                            </Button>
-                        </Link>
-                        <Snackbar open={displayAlert} autoHideDuration={6000} onClose={handleCloseAlert}>
-                            <Alert onClose={handleCloseAlert} severity={alertSeverity as AlertColor}>
-                                {alertMessage}
-                            </Alert>
-                        </Snackbar>
-                    </Grid>
+                    {
+                        loan?.status === "PENDING" ?
+                            <Grid container item xs={12} spacing={2}>
+                                <Grid item xs={6} sx={{pb: 1}}>
+                                    <FormControl fullWidth>
+                                        <InputLabel htmlFor="loan-status">Change Status</InputLabel>
+                                        <Select
+                                            margin="dense"
+                                            id="loan-status"
+                                            value={newLoanStatus}
+                                            label="Change Status"
+                                            onChange={(e) => setNewLoanStatus(e.target.value as string)}
+                                        >
+                                            <MenuItem value={"ACCEPTED"}>Accepted</MenuItem>
+                                            <MenuItem value={"REJECTED"}>Rejected</MenuItem>
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Button variant="contained" color="primary" onClick={handleStatusChange}
+                                            sx={{mt: 1}}>
+                                        Update Status
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                            : ""
+                    }
+                    <Snackbar open={displayAlert} autoHideDuration={6000} onClose={handleCloseAlert}>
+                        <Alert onClose={handleCloseAlert} severity={alertSeverity as AlertColor}>
+                            {alertMessage}
+                        </Alert>
+                    </Snackbar>
                 </Grid>
             </Paper>
         </Container>

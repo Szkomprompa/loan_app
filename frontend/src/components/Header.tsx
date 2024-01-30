@@ -3,17 +3,21 @@ import React from 'react';
 import {AppBar, Toolbar, Typography, Button, Box} from '@mui/material';
 import Link from 'next/link';
 import {TextSnippet} from "@mui/icons-material";
+import {useDispatch} from "react-redux";
+import {setAuthentication} from "@/redux/auth-slice";
 
 function Header() {
+    const dispatch = useDispatch();
+
     const handleLogout = () => {
-        location.reload();
+        dispatch(setAuthentication(''));
         console.log('User logged out');
     };
 
     return (
         <AppBar position="absolute">
             <Toolbar>
-                <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
+                <Box sx={{flexGrow: 1, display: 'flex', alignItems: 'center'}}>
                     <TextSnippet color="secondary"/>
                     <Typography variant="h6" color="secondary">
                         LoanManager
