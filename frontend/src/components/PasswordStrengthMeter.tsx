@@ -25,7 +25,6 @@ const calculatePasswordEntropy = (password: string) => {
     const entropy = entropyCalc(password);
     console.log('Entropy:', entropy);
 
-    // Normalize entropy to a percentage between 0 and 100
     return Math.min((entropy / 4.321928094887363) * 100, 100);
 }
 
