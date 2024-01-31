@@ -7,6 +7,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
@@ -19,6 +20,7 @@ import pamiw.eepw.loanmanager.security.password.RecoverPasswordRequest;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +34,9 @@ public class AuthenticationService {
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final UserService userService;
     private final ResourceLoader resourceLoader;
+
+    private static final long BASE_DELAY_MS = 1000;
+    private static final long MAX_DELAY_MS = 5000;
 
     public AuthenticationResponseWithRecoveryToken register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -49,6 +54,7 @@ public class AuthenticationService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(UserRole.USER)
+                .loginAttempts(0)
                 .build();
         userRepository.save(user);
 
@@ -60,17 +66,27 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
-        var user = userRepository.findByEmail(request.getEmail()).orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
+
+            resetLoginAttempts(request.getEmail());
+
+            var user = userRepository.findByEmail(request.getEmail()).orElseThrow();
+            var jwtToken = jwtService.generateToken(user);
+            return AuthenticationResponse.builder()
+                    .token(jwtToken)
+                    .build();
+        } catch (AuthenticationException e) {
+            incrementLoginAttempts(request.getEmail());
+            log.info("Login attempt failed, incrementing login attempts");
+
+            throw e;
+        }
     }
 
     public AuthenticationResponseWithRecoveryToken resetPassword(RecoverPasswordRequest request) {
@@ -108,5 +124,26 @@ public class AuthenticationService {
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error while checking password");
         }
+    }
+
+    private void incrementLoginAttempts(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow();
+        int currentAttempts = user.getLoginAttempts();
+        user.setLoginAttempts(currentAttempts + 1);
+        userRepository.save(user);
+
+        long delay = Math.min(BASE_DELAY_MS * currentAttempts, MAX_DELAY_MS);
+        try {
+            TimeUnit.MILLISECONDS.sleep(delay);
+        } catch (InterruptedException e) {
+            log.error("InterruptedException while adding login delay: {}", e.getMessage());
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    private void resetLoginAttempts(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow();
+        user.setLoginAttempts(0);
+        userRepository.save(user);
     }
 }

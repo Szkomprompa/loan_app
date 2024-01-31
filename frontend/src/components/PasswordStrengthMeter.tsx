@@ -1,7 +1,8 @@
-import {useState} from "react";
 import {LinearProgress} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+
+const characterNumber = 91;
 
 function entropyCalc(str: string): number {
     const len: number = str.length;
@@ -29,7 +30,7 @@ const calculatePasswordEntropy = (password: string) => {
 }
 
 const calculatePasswordStrength = (password: string) => {
-    const entropy = password.length * Math.log2(87);
+    const entropy = password.length * Math.log2(characterNumber);
 
     return Math.min((entropy / 120) * 100, 100);
 };
@@ -38,12 +39,13 @@ const getPasswordStrengthText = (password: string, passwordStrength: number) => 
     const digitRegex = /\d/;
     const lowercaseRegex = /[a-z]/;
     const uppercaseRegex = /[A-Z]/;
-    const specialCharRegex = /[\!\@\#\$\%\^\&\*\)\(\+\=\.\<\>\{\}\[\]\:\;\'\"\|\~\`\_\-]/g;
+    const specialCharRegex = /[\%\!\@\#\&\(\)\–\_\+\=\[\{\}\]\:\;\'\,\.\?\/\*\~\`\$\^\<\>]/g;
 
     const hasDigit = digitRegex.test(password);
     const hasLowercase = lowercaseRegex.test(password);
     const hasUppercase = uppercaseRegex.test(password);
     const hasSpecialChar = specialCharRegex.test(password);
+    const isLongEnough = password.length >= 7;
 
     let passwordStrengthText = 'Password strength: ';
 
@@ -56,7 +58,7 @@ const getPasswordStrengthText = (password: string, passwordStrength: number) => 
         passwordStrengthText = passwordStrengthText.concat('Strong');
     }
 
-    if (!(hasDigit && hasLowercase && hasUppercase && hasSpecialChar)) {
+    if (!(hasDigit && hasLowercase && hasUppercase && hasSpecialChar && isLongEnough)) {
         passwordStrengthText = passwordStrengthText.concat(' and does not meet the minimum requirements.');
     } else {
         passwordStrengthText = passwordStrengthText.concat('.');

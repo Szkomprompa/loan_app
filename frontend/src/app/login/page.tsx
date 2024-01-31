@@ -8,7 +8,7 @@ import {
     Container,
     Grid,
     TextField,
-    Typography, Alert, AlertColor, Snackbar, InputLabel, OutlinedInput, FormHelperText, FormControl
+    Typography, Alert, AlertColor, Snackbar, InputLabel, OutlinedInput, FormHelperText, FormControl, CircularProgress
 } from '@mui/material';
 import {LockOutlined} from "@mui/icons-material";
 import {LoginRequest} from "@/types/user/userTypes";
@@ -21,16 +21,25 @@ export default function Login() {
     const dispatch = useDispatch();
     const router = useRouter();
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const [loading, setLoading] = useState(false);
+    const [displayAlert, setDisplayAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState('');
+    const [alertSeverity, setAlertSeverity] = useState('info');
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
+        setLoading(true);
 
-        const loginRequest: LoginRequest = {
-            email: data.get('email')?.toString() as string,
-            password: data.get('password')?.toString() as string,
-        }
+        try {
+            const data = new FormData(event.currentTarget);
 
-        login(loginRequest).then((response) => {
+            const loginRequest = {
+                email: data.get('email')?.toString() as string,
+                password: data.get('password')?.toString() as string,
+            };
+
+            const response = await login(loginRequest);
+
             if (response?.token) {
                 dispatch(setAuthentication(response?.token));
                 router.push('/loans/lent-loans');
@@ -39,18 +48,42 @@ export default function Login() {
                 setAlertSeverity('error');
                 setDisplayAlert(true);
             }
-        })
-            .catch((error) => {
-                console.log("Error logging in:", error);
-                setAlertMessage('An error occurred while logging in. Please try again later.');
-                setAlertSeverity('error');
-                setDisplayAlert(true);
-            });
+        } catch (error) {
+            console.log('Error logging in:', error);
+            setAlertMessage('An error occurred while logging in. Please try again later.');
+            setAlertSeverity('error');
+            setDisplayAlert(true);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const [displayAlert, setDisplayAlert] = useState(false);
-    const [alertMessage, setAlertMessage] = useState('');
-    const [alertSeverity, setAlertSeverity] = useState('info');
+    // const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    //     event.preventDefault();
+    //     const data = new FormData(event.currentTarget);
+    //
+    //     const loginRequest: LoginRequest = {
+    //         email: data.get('email')?.toString() as string,
+    //         password: data.get('password')?.toString() as string,
+    //     }
+    //
+    //     login(loginRequest).then((response) => {
+    //         if (response?.token) {
+    //             dispatch(setAuthentication(response?.token));
+    //             router.push('/loans/lent-loans');
+    //         } else {
+    //             setAlertMessage('Failed to log in. Please try again.');
+    //             setAlertSeverity('error');
+    //             setDisplayAlert(true);
+    //         }
+    //     })
+    //         .catch((error) => {
+    //             console.log("Error logging in:", error);
+    //             setAlertMessage('An error occurred while logging in. Please try again later.');
+    //             setAlertSeverity('error');
+    //             setDisplayAlert(true);
+    //         });
+    // };
 
     const handleCloseAlert = () => {
         setDisplayAlert(false);
@@ -107,7 +140,7 @@ export default function Login() {
                             variant="contained"
                             sx={{mt: 3, mb: 2}}
                         >
-                            Log In
+                            {loading ? <CircularProgress size={24} color="secondary" /> : 'Log In'}
                         </Button>
                         <Snackbar open={displayAlert} autoHideDuration={6000} onClose={handleCloseAlert}>
                             <Alert onClose={handleCloseAlert} severity={alertSeverity as AlertColor}>

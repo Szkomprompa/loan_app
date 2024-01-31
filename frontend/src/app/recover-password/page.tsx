@@ -18,11 +18,14 @@ import {recoverPassword} from "@/services/authService";
 import {setAuthentication} from "@/redux/auth-slice";
 import {useDispatch} from "react-redux";
 import RecoveryToken from "@/components/RecoveryToken";
+import PasswordStrengthMeter from "@/components/PasswordStrengthMeter";
 
 export default function RecoverPassword() {
     const [isModalOpen, setModalOpen] = useState(false);
     const [recoveryToken, setRecoveryToken] = useState('');
     const dispatch = useDispatch();
+
+    const [password, setPassword] = useState('');
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -70,6 +73,10 @@ export default function RecoverPassword() {
         setDisplayAlert(false);
     };
 
+    const handlePasswordChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        setPassword(event.target.value);
+    };
+
     return (
         <Container component="main" maxWidth="xs">
             <Box
@@ -107,7 +114,11 @@ export default function RecoverPassword() {
                         id="newPassword"
                         autoComplete="new-password"
                         error={displayAlert}
+                        onChange={handlePasswordChange}
                     />
+                    <Grid item xs={12}>
+                        <PasswordStrengthMeter password={password}/>
+                    </Grid>
                     <TextField
                         margin="dense"
                         required
